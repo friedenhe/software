@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "This is the hoomd-private branch: use build_private.sh"
+exit 1
+
 set -u
 set -e
 
