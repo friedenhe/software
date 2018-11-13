@@ -51,6 +51,8 @@ shas['SIGNAC_SHA'] = '8a3c5b46d079decb9fa2d5d85628c2bd31057a44e945beba930d3b624d
 repo_version['signac-flow'] = versions['SIGNAC_FLOW_VERSION'] = 'v0.6.3'
 shas['SIGNAC_FLOW_SHA'] = '0a1ff4d052ea1e02079b60c0a5710df28e3fa8286649ccc030d032ec99901dba'
 
+repo_version['rosalind'] = versions['ROSALIND_VERSION'] = 'v0.0.0'
+repo_version['euclid'] = versions['EUCLID_VERSION'] = 'v0.0.0'
 
 if __name__ == '__main__':
 

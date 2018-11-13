@@ -94,3 +94,21 @@ RUN mkdir /hoomd-examples \
 RUN mkdir /fresnel-examples \
     && curl -sSL https://bitbucket.org/glotzer/fresnel-examples/get/master.tar.gz \
     | tar -xzC /fresnel-examples --strip-components=1
+
+COPY rosalind-{{ ROSALIND_VERSION }}.tar.gz /root/
+RUN cd /root \
+    && tar -xzf rosalind-{{ ROSALIND_VERSION }}.tar.gz \
+    && cd /root/rosalind-{{ ROSALIND_VERSION }} \
+    && export CFLAGS="{{CFLAGS}}" CXXFLAGS="{{CFLAGS}}" \
+    && python3 -m pip install --no-deps --ignore-installed . \
+    && rm -rf /root/rosalind-{{ ROSALIND_VERSION }} \
+    && rm /root/rosalind-{{ ROSALIND_VERSION }}.tar.gz
+
+COPY euclid-{{ EUCLID_VERSION }}.tar.gz /root/
+RUN cd /root \
+    && tar -xzf euclid-{{ EUCLID_VERSION }}.tar.gz \
+    && cd /root/euclid-{{ EUCLID_VERSION }} \
+    && export CFLAGS="{{CFLAGS}}" CXXFLAGS="{{CFLAGS}}" \
+    && python3 -m pip install --no-deps --ignore-installed . \
+    && rm -rf /root/euclid-{{ EUCLID_VERSION }} \
+    && rm /root/euclid-{{ EUCLID_VERSION }}.tar.gz
