@@ -6,6 +6,12 @@ set -e
 DATE_TAG=$(date +%Y.%m)
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+cp $DIR/test/*.py $DIR/cuda8/nompi
+cp $DIR/*.tar.gz $DIR/cuda8/nompi
+docker build $DIR/cuda8/nompi \
+             -t software/vislab
+docker run -t --rm --privileged -v /var/run/docker.sock:/var/run/docker.sock -v ${DIR}:/output singularityware/docker2singularity:v2.6 --name software-private-vislab-${DATE_TAG} software/vislab
+
 cp $DIR/test/*.py $DIR/cuda8/comet
 cp $DIR/*.tar.gz $DIR/cuda8/comet
 docker build $DIR/cuda8/comet \
