@@ -11,8 +11,8 @@ shas = {}
 repo_version = {}
 
 # dependencies
-versions['EMBREE_VERSION'] = '3.2.1'
-shas['EMBREE_SHA'] = '4bc1801d7a358dfd71e1fb6d46c9401397923980c11e7801f26d5b3f1aed4506'
+versions['EMBREE_VERSION'] = '3.3.0'
+shas['EMBREE_SHA'] = 'c70e5cef5eeb88aa5c384121c8908287950d756c3eaac3f0bccea2d94c4fea3f'
 
 versions['OSU_MICROBENCHMARK_VERSION'] ='5.4.1'
 shas['OSU_MICROBENCHMARK_SHA'] ='e90cb683a01744377f77d420de401431242593d8376b25b120950266e140e83c'
@@ -20,30 +20,33 @@ shas['OSU_MICROBENCHMARK_SHA'] ='e90cb683a01744377f77d420de401431242593d8376b25b
 versions['MPI4PY_VERSION'] = '3.0.0'
 shas['MPI4PY_SHA'] = 'b457b02d85bdd9a4775a097fac5234a20397b43e073f14d9e29b6cd78c68efd7'
 
+versions['TBB_VERSION'] = '2019_U2'
+shas['TBB_SHA'] = '1245aa394a92099e23ce2f60cdd50c90eb3ddcd61d86cae010ef2f1de61f32d9'
+
 # glotzer lab
 repo_version['fresnel']     = versions['FRESNEL_VERSION']     = 'v0.6.0'
 shas['FRESNEL_SHA'] = 'de1b18f87b5bcdd96844c143d6a9cf560df873a9f1f7eae8d6ff2eac5a1d2467'
 
-repo_version['freud']       = versions['FREUD_VERSION']       = 'v0.11.3'
-shas['FREUD_SHA'] = 'fc803bd20a43b998cc660011ac408c51750427bebe5e26131aef9f9446fe53ec'
+repo_version['freud']       = versions['FREUD_VERSION']       = 'v0.11.4'
+shas['FREUD_SHA'] = '9e54cb2f9ef2df7569ae04b5794d0372439b8667cd1ba32390496b5ddf3ad233'
 
-repo_version['gsd']         = versions['GSD_VERSION']         = 'v1.5.4'
-shas['GSD_SHA'] = '09b09f1316c809dae96b1a02972673ef928eb549fcc1cae484265590a5b4acff'
+repo_version['gsd']         = versions['GSD_VERSION']         = 'v1.5.5'
+shas['GSD_SHA'] = '465fbf207217e5d1223e6f3ab07a58ed5656b704f32730c27feaa0cfb6b6e70f'
 
-repo_version['hoomd-blue']  = versions['HOOMD_VERSION']       = 'v2.4.0'
-shas['HOOMD_SHA'] = '052fffd0ebcc43a86fa530ff54054ae183dcd5c404957e41f7d83f633e39569a'
+repo_version['hoomd-blue']  = versions['HOOMD_VERSION']       = 'v2.4.1'
+shas['HOOMD_SHA'] = '0763c0f701f70439667256b67581b70052877330006cadd7b4eae7655fc913e9'
 
 repo_version['libgetar']    = versions['LIBGETAR_VERSION']    = 'v0.7.0'
 shas['LIBGETAR_SHA'] = '2a33809981b7a99c856ca60a1a7b9b1a0b3978fd8315ab3ab07b7b279a7c55e7'
 
-repo_version['pythia']      = versions['PYTHIA_VERSION']      = 'v0.2.3'
-shas['PYTHIA_SHA'] = '6fa74e608024d8126657d788016ec3a4112a7c17b8deda86e51a2905c47f5ed5'
+repo_version['pythia']      = versions['PYTHIA_VERSION']      = 'v0.2.4'
+shas['PYTHIA_SHA'] = 'cebc1033759f518aa4f9c41d4660c7748b646f6f6117be9e4dcb9e53ef2f0251'
 
 repo_version['rowan']       = versions['ROWAN_VERSION']       = 'v1.1.6'
 shas['ROWAN_SHA'] = '14627245b95b88e3d4358e6d9df0501eec1bcb892c71ba5829904d4728ecb9f8'
 
-repo_version['plato']       = versions['PLATO_VERSION']       = 'v1.2.0'
-shas['PLATO_SHA'] = 'fdd574a5ed6956bb68430de13991938d4765697736c857822c8c1addf5edd07d'
+repo_version['plato']       = versions['PLATO_VERSION']       = 'v1.3.0'
+shas['PLATO_SHA'] = 'ff079b6dead70fe2b1419277c8269d5c21dcbbd82c753aaa223e8614b5446d66'
 
 repo_version['signac']      = versions['SIGNAC_VERSION']      = 'v0.9.4'
 shas['SIGNAC_SHA'] = '8a3c5b46d079decb9fa2d5d85628c2bd31057a44e945beba930d3b624dcb8437'
@@ -68,26 +71,27 @@ if __name__ == '__main__':
     openmpi_template = env.get_template('openmpi.jinja')
     mvapich2_template = env.get_template('mvapich2.jinja')
     titan_template = env.get_template('titan.jinja')
+    summit_template = env.get_template('summit.jinja')
     glotzerlab_software_template = env.get_template('glotzerlab-software.jinja')
-    glotzerlab_software_mpi_template = env.get_template('glotzerlab-software-mpi.jinja')
     finalize_template = env.get_template('finalize.jinja')
 
-    write('cuda8/Dockerfile', [base_template],
-          FROM='nvidia/cuda:8.0-devel-ubuntu16.04',
+    write('docker/Dockerfile', [base_template],
+          FROM='nvidia/cuda:9.2-devel-ubuntu16.04',
           ENABLE_MPI='off',
           MAKEJOBS=10,
           **versions,
           **shas)
 
-    write('cuda8/nompi/Dockerfile', [base_template, glotzerlab_software_template, glotzerlab_software_mpi_template, finalize_template],
-          FROM='nvidia/cuda:8.0-devel-ubuntu16.04',
+    write('docker/nompi/Dockerfile', [base_template, glotzerlab_software_template, finalize_template],
+          FROM='nvidia/cuda:9.2-devel-ubuntu16.04',
           ENABLE_MPI='off',
           MAKEJOBS=10,
           **versions,
           **shas)
 
-    write('cuda8/flux/Dockerfile', [base_template, glotzerlab_software_template, ib_mlx_template, openmpi_template, glotzerlab_software_mpi_template, finalize_template],
-          FROM='nvidia/cuda:8.0-devel-ubuntu16.04',
+    write('docker/flux/Dockerfile', [base_template, ib_mlx_template, openmpi_template, glotzerlab_software_template, finalize_template],
+          FROM='nvidia/cuda:9.1-devel-ubuntu16.04',
+          system='flux',
           OPENMPI_VERSION='3.0',
           OPENMPI_PATCHLEVEL='0',
           OPENMPI_SHA = 'f699bff21db0125d8cccfe79518b77641cd83628725a1e1ed3e45633496a82d7',
@@ -99,8 +103,9 @@ if __name__ == '__main__':
     # see https://stackoverflow.com/questions/5470257/how-to-see-which-flags-march-native-will-activate
     # for information on obtaining CFLAGS settings for specific machines
     # gcc -'###' -E - -march=native 2>&1 | sed -r '/cc1/!d;s/(")|(^.* - )|( -mno-[^\ ]+)//g'
-    write('cuda8/comet/Dockerfile', [base_template, glotzerlab_software_template, ib_mlx_template, openmpi_template, glotzerlab_software_mpi_template, finalize_template],
-          FROM='nvidia/cuda:8.0-devel-ubuntu16.04',
+    write('docker/comet/Dockerfile', [base_template, ib_mlx_template, openmpi_template, glotzerlab_software_template, finalize_template],
+          FROM='nvidia/cuda:9.2-devel-ubuntu16.04',
+          system='comet',
           OPENMPI_VERSION='1.8',
           OPENMPI_PATCHLEVEL='4',
           OPENMPI_SHA='23158d916e92c80e2924016b746a93913ba7fae9fff51bf68d5c2a0ae39a2f8a',
@@ -110,8 +115,9 @@ if __name__ == '__main__':
           **versions,
           **shas)
 
-    write('cuda8/bridges/Dockerfile', [base_template, glotzerlab_software_template, ib_hfi1_template, openmpi_template, glotzerlab_software_mpi_template, finalize_template],
-          FROM='nvidia/cuda:8.0-devel-ubuntu16.04',
+    write('docker/bridges/Dockerfile', [base_template, ib_hfi1_template, openmpi_template, glotzerlab_software_template, finalize_template],
+          FROM='nvidia/cuda:9.2-devel-ubuntu16.04',
+          system='bridges',
           OPENMPI_VERSION='2.1',
           OPENMPI_PATCHLEVEL='2',
           OPENMPI_SHA='3cc5804984c5329bdf88effc44f2971ed244a29b256e0011b8deda02178dd635',
@@ -122,8 +128,9 @@ if __name__ == '__main__':
           **shas)
 
     # TODO: update cflags after switching to newer compiler
-    write('cuda8/stampede2/Dockerfile', [base_template, glotzerlab_software_template, ib_hfi1_template, mvapich2_template, glotzerlab_software_mpi_template, finalize_template],
-          FROM='nvidia/cuda:8.0-devel-ubuntu16.04',
+    write('docker/stampede2/Dockerfile', [base_template, ib_hfi1_template, mvapich2_template, glotzerlab_software_template, finalize_template],
+          FROM='nvidia/cuda:9.2-devel-ubuntu16.04',
+          system='stampede2',
           MVAPICH_VERSION='2.3',
           MVAPICH_PATCHLEVEL='',
           MVAPICH_SHA='01d5fb592454ddd9ecc17e91c8983b6aea0e7559aa38f410b111c8ef385b50dd',
@@ -133,10 +140,26 @@ if __name__ == '__main__':
           **versions,
           **shas)
 
-    write('olcf-titan/Dockerfile', [base_template, titan_template, glotzerlab_software_template, glotzerlab_software_mpi_template, finalize_template],
+    write('script/titan/install.sh', [base_template, titan_template, glotzerlab_software_template, finalize_template],
           FROM='olcf/titan:ubuntu-16.04_2018-01-18',
           ENABLE_MPI='on',
+          output='script',
+          system='titan',
           MAKEJOBS=2,
           CFLAGS='-D_FORCE_INLINES',
+          ENABLE_TBB='off',
+          BUILD_JIT='off',
+          **versions,
+          **shas)
+
+    write('script/summit/install.sh', [summit_template, glotzerlab_software_template],
+          ENABLE_MPI='on',
+          MAKEJOBS=20,
+          CFLAGS='-mcpu=power9 -mtune=power9',
+          output='script',
+          system='summit',
+          ENABLE_TBB='off',
+          BUILD_JIT='off',
+          ENABLE_MPI_CUDA='on',
           **versions,
           **shas)

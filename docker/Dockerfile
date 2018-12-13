@@ -1,0 +1,66 @@
+FROM nvidia/cuda:9.2-devel-ubuntu16.04
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  clang-5.0 \
+  cmake \
+  curl \
+  cython3 \
+  ffmpeg \
+  git \
+  libboost-dev \
+  libedit-dev \
+  libtbb-dev \
+  libsqlite3-dev \
+  llvm-5.0-dev \
+  python3 \
+  python3-dev \
+  python3-h5py \
+  python3-matplotlib \
+  python3-nose \
+  python3-numpy \
+  python3-pandas \
+  python3-pip \
+  python3-pytest \
+  python3-pyqt5 \
+  python3-scipy \
+  python3-sklearn-lib \
+  python3-sklearn-pandas \
+  python3-skimage-lib \
+  python3-setuptools \
+  python3-sphinx \
+  python3-sphinx-rtd-theme \
+  python3-yaml \
+  zlib1g-dev \
+  ca-certificates \
+  && rm -rf /var/lib/apt/lists/* \
+  && pip3 install --no-cache-dir jupyter pillow pyhull
+
+# prevent python from loading packages from outside the container
+# default empty pythonpath
+ENV PYTHONPATH=/ignore/pythonpath
+# disable user site directories (https://docs.python.org/3/library/site.html#module-site)
+RUN sed -i -e 's/ENABLE_USER_SITE = None/ENABLE_USER_SITE = False/g' `python3 -c 'import site; print(site.__file__)'`
+
+# put clang on the path
+ENV PATH=$PATH:/usr/lib/llvm-5.0/bin
+
+# embree
+ENV CPATH=/opt/embree-3.3.0.x86_64.linux/include:$CPATH \
+    LIBRARY_PATH=/opt/embree-3.3.0.x86_64.linux/lib:$LIBRARY_PATH \
+    LD_LIBRARY_PATH=/opt/embree-3.3.0.x86_64.linux/lib:$LD_LIBRARY_PATH \
+    EMBREE3_LINK=/opt/embree-3.3.0.x86_64.linux/lib
+
+RUN curl -sSLO https://github.com/embree/embree/releases/download/v3.3.0/embree-3.3.0.x86_64.linux.tar.gz \
+    && echo "c70e5cef5eeb88aa5c384121c8908287950d756c3eaac3f0bccea2d94c4fea3f  embree-3.3.0.x86_64.linux.tar.gz" | sha256sum -c - \
+    && tar -xzf embree-3.3.0.x86_64.linux.tar.gz -C /opt \
+    && rm -rf /opt/embree-3.3.0.x86_64.linux/bin \
+    && rm -rf /opt/embree-3.3.0.x86_64.linux/doc \
+    && rm embree-3.3.0.x86_64.linux.tar.gz
+
+# mount points for filesystems on clusters
+RUN mkdir -p /nfs \
+    mkdir -p /oasis \
+    mkdir -p /scratch \
+    mkdir -p /work \
+    mkdir -p /projects \
+    mkdir -p /home1
