@@ -165,19 +165,49 @@ ENV CXX=/usr/bin/g++-4.9
     && rm signac-flow-v0.6.3.tar.gz \
     || exit 1
 
- curl -sSLO https://glotzerlab.engin.umich.edu/Downloads/hoomd/hoomd-v2.4.1.tar.gz \
-    && echo "0763c0f701f70439667256b67581b70052877330006cadd7b4eae7655fc913e9  hoomd-v2.4.1.tar.gz" | sha256sum -c - \
-    && tar -xzf hoomd-v2.4.1.tar.gz -C . \
-    && cd hoomd-v2.4.1 \
+# curl -sSLO https://glotzerlab.engin.umich.edu/Downloads/hoomd/hoomd-v2.4.1.tar.gz \
+#    && echo "0763c0f701f70439667256b67581b70052877330006cadd7b4eae7655fc913e9  hoomd-v2.4.1.tar.gz" | sha256sum -c - \
+#    && tar -xzf hoomd-v2.4.1.tar.gz -C . \
+#    && cd hoomd-v2.4.1 \
+#    && mkdir build \
+#    && cd build \
+#    && export CFLAGS="-D_FORCE_INLINES" CXXFLAGS="-D_FORCE_INLINES" \
+#    && cmake ../ -DPYTHON_EXECUTABLE="`which python3`" -DENABLE_CUDA=on -DENABLE_MPI=on -DENABLE_TBB=off -DBUILD_JIT=off -DBUILD_TESTING=off -DENABLE_MPI_CUDA=off -DCMAKE_INSTALL_PREFIX=`python3 -c "import site; print(site.getsitepackages()[0])"` \
+#    && make install -j2 \
+#    && cd ../../ \
+#    && rm -rf /root/hoomd-v2.4.1 \
+#    && rm hoomd-v2.4.1.tar.gz \
+#    || exit 1
+
+COPY hoomd-private-v2.4.1.tar.gz /root/
+RUN cd /root \
+    && tar -xzf hoomd-private-v2.4.1.tar.gz \
+    && cd /root/hoomd-private-v2.4.1 \
     && mkdir build \
     && cd build \
     && export CFLAGS="-D_FORCE_INLINES" CXXFLAGS="-D_FORCE_INLINES" \
-    && cmake ../ -DPYTHON_EXECUTABLE="`which python3`" -DENABLE_CUDA=on -DENABLE_MPI=on -DENABLE_TBB=off -DBUILD_JIT=off -DBUILD_TESTING=off -DENABLE_MPI_CUDA=off -DCMAKE_INSTALL_PREFIX=`python3 -c "import site; print(site.getsitepackages()[0])"` \
+    && cmake ../ -DENABLE_CUDA=on -DENABLE_MPI=on -DENABLE_TBB=on -DBUILD_JIT=on -DBUILD_TESTING=off -DCMAKE_INSTALL_PREFIX=`python3 -c "import site; print(site.getsitepackages()[0])"` \
     && make install -j2 \
-    && cd ../../ \
-    && rm -rf /root/hoomd-v2.4.1 \
-    && rm hoomd-v2.4.1.tar.gz \
-    || exit 1
+    && rm -rf /root/hoomd-private-v2.4.1 \
+    && rm /root/hoomd-private-v2.4.1.tar.gz
+
+COPY rosalind-v0.0.0.tar.gz /root/
+RUN cd /root \
+    && tar -xzf rosalind-v0.0.0.tar.gz \
+    && cd /root/rosalind-v0.0.0 \
+    && export CFLAGS="-D_FORCE_INLINES" CXXFLAGS="-D_FORCE_INLINES" \
+    && python3 -m pip install --no-deps --ignore-installed . \
+    && rm -rf /root/rosalind-v0.0.0 \
+    && rm /root/rosalind-v0.0.0.tar.gz
+
+COPY euclid-v0.0.0.tar.gz /root/
+RUN cd /root \
+    && tar -xzf euclid-v0.0.0.tar.gz \
+    && cd /root/euclid-v0.0.0 \
+    && export CFLAGS="-D_FORCE_INLINES" CXXFLAGS="-D_FORCE_INLINES" \
+    && python3 -m pip install --no-deps --ignore-installed . \
+    && rm -rf /root/euclid-v0.0.0 \
+    && rm /root/euclid-v0.0.0.tar.gz
 
 
 
