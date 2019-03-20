@@ -23,6 +23,7 @@ module load gcc/6.4.0
 module load cuda
 module load cmake
 module load git
+module load netlib-lapack/3.8.0
 
 export LD_LIBRARY_PATH=$ROOT/lib:\$LD_LIBRARY_PATH
 export PATH=$ROOT/bin:\$PATH
@@ -42,48 +43,55 @@ rm -rf /tmp/$USER-glotzerlab-software/*
 python3 -m pip install --progress-bar off --no-deps --no-binary :all: cython mpi4py six numpy
 
 # TBB
-curl -sSLO https://github.com/01org/tbb/archive/2019_U2.tar.gz \
-    && echo "1245aa394a92099e23ce2f60cdd50c90eb3ddcd61d86cae010ef2f1de61f32d9  2019_U2.tar.gz" | sha256sum -c - \
-    && tar -xzf 2019_U2.tar.gz -C . \
-    && cd tbb-2019_U2 \
+curl -sSLO https://github.com/01org/tbb/archive/2019_U3.tar.gz \
+    && echo "b2244147bc8159cdd8f06a38afeb42f3237d3fc822555499d7ccfbd4b86f8ece  2019_U3.tar.gz" | sha256sum -c - \
+    && tar -xzf 2019_U3.tar.gz -C . \
+    && cd tbb-2019_U3 \
     && make \
     && install -d $ROOT/lib \
     && install -m755 build/linux_*release/*.so* ${ROOT}/lib \
     && install -d $ROOT/include \
     && cp -a include/tbb $ROOT/include \
     && cd .. \
-    && rm -rf tbb-2019_U2 \
-    && rm 2019_U2.tar.gz \
+    && rm -rf tbb-2019_U3 \
+    && rm 2019_U3.tar.gz \
     || exit 1
 
 # embree is not available for power9
 
+# scipy
+curl -sSLO https://github.com/scipy/scipy/releases/download/v1.2.0/scipy-1.2.0.tar.gz \
+    && echo "51a2424c8ed80e60bdb9a896806e7adaf24a58253b326fbad10f80a6d06f2214  scipy-1.2.0.tar.gz" | sha256sum -c - \
+    && tar -xzf scipy-1.2.0.tar.gz -C . \
+    && cd scipy-1.2.0 \
+    && LAPACK=${OLCF_NETLIB_LAPACK_ROOT}/lib64/liblapack.so BLAS=${OLCF_NETLIB_LAPACK_ROOT}/lib64/libblas.so python3 setup.py install
 
 
- curl -sSLO https://glotzerlab.engin.umich.edu/Downloads/freud/freud-v0.11.4.tar.gz \
-    && echo "9e54cb2f9ef2df7569ae04b5794d0372439b8667cd1ba32390496b5ddf3ad233  freud-v0.11.4.tar.gz" | sha256sum -c - \
-    && tar -xzf freud-v0.11.4.tar.gz -C . \
-    && rm -f freud-v0.11.4/*.toml \
+
+ curl -sSLO https://glotzerlab.engin.umich.edu/Downloads/freud/freud-v1.0.0.tar.gz \
+    && echo "71599d85be07e6ed9afc3c85ec9a5ab5eafa8c8185fd4b306eb4ae43d5e127f2  freud-v1.0.0.tar.gz" | sha256sum -c - \
+    && tar -xzf freud-v1.0.0.tar.gz -C . \
+    && rm -f freud-v1.0.0/*.toml \
     && export CFLAGS="-mcpu=power9 -mtune=power9" CXXFLAGS="-mcpu=power9 -mtune=power9" \
-    && python3 -m pip install --no-deps --ignore-installed ./freud-v0.11.4 \
-    && rm -rf freud-v0.11.4 \
-    && rm freud-v0.11.4.tar.gz \
+    && python3 -m pip install --no-deps --ignore-installed ./freud-v1.0.0 \
+    && rm -rf freud-v1.0.0 \
+    && rm freud-v1.0.0.tar.gz \
     || exit 1
 
 
 
- curl -sSLO https://glotzerlab.engin.umich.edu/Downloads/gsd/gsd-v1.6.0.tar.gz \
-    && echo "2d4ddacbea75b36a446a41c5df8ba16d793c5f1674e001795393931f96d0f4e9  gsd-v1.6.0.tar.gz" | sha256sum -c - \
-    && tar -xzf gsd-v1.6.0.tar.gz -C . \
-    && cd gsd-v1.6.0 \
+ curl -sSLO https://glotzerlab.engin.umich.edu/Downloads/gsd/gsd-v1.6.1.tar.gz \
+    && echo "45edc981a5899ca7fb81205a3c1a3a07d58ea955f877fdd63e2a3e15d5ead41e  gsd-v1.6.1.tar.gz" | sha256sum -c - \
+    && tar -xzf gsd-v1.6.1.tar.gz -C . \
+    && cd gsd-v1.6.1 \
     && mkdir build \
     && cd build \
     && export CFLAGS="-mcpu=power9 -mtune=power9" CXXFLAGS="-mcpu=power9 -mtune=power9" \
     && cmake ../ -DPYTHON_EXECUTABLE="`which python3`" -DCMAKE_INSTALL_PREFIX=`python3 -c "import site; print(site.getsitepackages()[0])"` \
     && make install -j20 \
     && cd ../../ \
-    && rm -rf gsd-v1.6.0 \
-    && rm gsd-v1.6.0.tar.gz \
+    && rm -rf gsd-v1.6.1 \
+    && rm gsd-v1.6.1.tar.gz \
     || exit 1
 
  curl -sSLO https://glotzerlab.engin.umich.edu/Downloads/libgetar/libgetar-v0.7.0.tar.gz \
@@ -96,13 +104,13 @@ curl -sSLO https://github.com/01org/tbb/archive/2019_U2.tar.gz \
     && rm libgetar-v0.7.0.tar.gz \
     || exit 1
 
- curl -sSLO https://glotzerlab.engin.umich.edu/Downloads/rowan/rowan-v1.1.6.tar.gz \
-    && echo "14627245b95b88e3d4358e6d9df0501eec1bcb892c71ba5829904d4728ecb9f8  rowan-v1.1.6.tar.gz" | sha256sum -c - \
-    && tar -xzf rowan-v1.1.6.tar.gz -C . \
+ curl -sSLO https://glotzerlab.engin.umich.edu/Downloads/rowan/rowan-v1.2.0.tar.gz \
+    && echo "68f27a6d7d1fd735a1cb0d465fd339ad137ea053fe7ccc56786464c33245dbeb  rowan-v1.2.0.tar.gz" | sha256sum -c - \
+    && tar -xzf rowan-v1.2.0.tar.gz -C . \
     && export CFLAGS="-mcpu=power9 -mtune=power9" CXXFLAGS="-mcpu=power9 -mtune=power9" \
-    && python3 -m pip install --no-deps --ignore-installed ./rowan-v1.1.6 \
-    && rm -rf rowan-v1.1.6 \
-    && rm rowan-v1.1.6.tar.gz \
+    && python3 -m pip install --no-deps --ignore-installed ./rowan-v1.2.0 \
+    && rm -rf rowan-v1.2.0 \
+    && rm rowan-v1.2.0.tar.gz \
     || exit 1
 
  curl -sSLO https://glotzerlab.engin.umich.edu/Downloads/plato/plato-v1.4.0.tar.gz \
@@ -123,13 +131,13 @@ curl -sSLO https://github.com/01org/tbb/archive/2019_U2.tar.gz \
     && rm pythia-v0.2.4.tar.gz \
     || exit 1
 
- curl -sSLO https://glotzerlab.engin.umich.edu/Downloads/signac/signac-v0.9.4.tar.gz \
-    && echo "8a3c5b46d079decb9fa2d5d85628c2bd31057a44e945beba930d3b624dcb8437  signac-v0.9.4.tar.gz" | sha256sum -c - \
-    && tar -xzf signac-v0.9.4.tar.gz -C . \
+ curl -sSLO https://glotzerlab.engin.umich.edu/Downloads/signac/signac-v1.0.0.tar.gz \
+    && echo "7eff681ec328a106ae9682697d2ed74565270a93410bab8583414fa756728ed0  signac-v1.0.0.tar.gz" | sha256sum -c - \
+    && tar -xzf signac-v1.0.0.tar.gz -C . \
     && export CFLAGS="-mcpu=power9 -mtune=power9" CXXFLAGS="-mcpu=power9 -mtune=power9" \
-    && python3 -m pip install --no-deps --ignore-installed ./signac-v0.9.4 \
-    && rm -rf signac-v0.9.4 \
-    && rm signac-v0.9.4.tar.gz \
+    && python3 -m pip install --no-deps --ignore-installed ./signac-v1.0.0 \
+    && rm -rf signac-v1.0.0 \
+    && rm signac-v1.0.0.tar.gz \
     || exit 1
 
  curl -sSLO https://glotzerlab.engin.umich.edu/Downloads/signac-flow/signac-flow-v0.6.4.tar.gz \
@@ -137,21 +145,22 @@ curl -sSLO https://github.com/01org/tbb/archive/2019_U2.tar.gz \
     && tar -xzf signac-flow-v0.6.4.tar.gz -C . \
     && export CFLAGS="-mcpu=power9 -mtune=power9" CXXFLAGS="-mcpu=power9 -mtune=power9" \
     && python3 -m pip install --no-deps --ignore-installed ./signac-flow-v0.6.4 \
+    && chmod o+rX /usr/local/lib/**/dist-packages/flow/templates/* \
     && rm -rf signac-flow-v0.6.4 \
     && rm signac-flow-v0.6.4.tar.gz \
     || exit 1
 
- curl -sSLO https://glotzerlab.engin.umich.edu/Downloads/hoomd/hoomd-v2.4.2.tar.gz \
-    && echo "2d46725844336c9b3cd39fcba26741042410e9d20384d5218c9272c92cccfb08  hoomd-v2.4.2.tar.gz" | sha256sum -c - \
-    && tar -xzf hoomd-v2.4.2.tar.gz -C . \
-    && cd hoomd-v2.4.2 \
+ curl -sSLO https://glotzerlab.engin.umich.edu/Downloads/hoomd/hoomd-v2.5.1.tar.gz \
+    && echo "07fcc83f7fb48373fe485bf7b8ac71cb79a2a6c918da3498dd64a37f2dc2c964  hoomd-v2.5.1.tar.gz" | sha256sum -c - \
+    && tar -xzf hoomd-v2.5.1.tar.gz -C . \
+    && cd hoomd-v2.5.1 \
     && mkdir build \
     && cd build \
     && export CFLAGS="-mcpu=power9 -mtune=power9" CXXFLAGS="-mcpu=power9 -mtune=power9" \
     && cmake ../ -DENABLE_CUDA=on -DENABLE_MPI=on -DENABLE_TBB=on -DBUILD_JIT=on -DBUILD_TESTING=off -DCMAKE_INSTALL_PREFIX=`python3 -c "import site; print(site.getsitepackages()[0])"` \
     && make install -j20 \
     && cd ../../ \
-    && rm -rf /root/hoomd-v2.4.2 \
-    && rm hoomd-v2.4.2.tar.gz \
+    && rm -rf /root/hoomd-v2.5.1 \
+    && rm hoomd-v2.5.1.tar.gz \
     || exit 1
 

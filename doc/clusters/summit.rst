@@ -13,12 +13,12 @@ and a module environment to create an equivalent software stack.
 
 First, clone the **glotzerlab-software** repository::
 
-    ▶ git clone https://bitbucket.org/glotzer/docker-glotzerlab-software
-    ▶ cd docker-glotzerlab-software
+    ▶ git clone https://github.com/glotzerlab/software
+    ▶ cd software
 
 If you already have a clone, update it::
 
-    ▶ cd docker-glotzerlab-software
+    ▶ cd software
     ▶ git pull origin master
 
 Per OLCF policies, you should install your software in NFS under ``/ccs/proj/``. Set the installation root directory to
@@ -51,14 +51,14 @@ The following packages are missing because we have not yet tested these on summi
   * matplotlib
   * pandas
   * pyqt5
-  * scipy
   * sklearn
   * yaml
 
 The summit environment is a `python3 venv <https://docs.python.org/3/library/venv.html>`_. You may extend it with
-additional python packages using ``pip install``::
+additional python packages using ``python3 -m pip install``::
 
     ▶ source ${GLOTZERLAB_SOFTWARE_ROOT}/environment.sh
+    ▶ python3 -m pip install package
 
 .. note::
 
