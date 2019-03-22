@@ -23,7 +23,7 @@ name=$repo
 
 if [[ $ver = "auto" ]]
 then
-    ver=$(git ls-remote --tags ssh://bitbucket.org/glotzer/$repo | sort -t '/' -k 3 -k 4 -V | grep -v { | awk -F/ '{ print $3 }' | tail -n1)
+    ver=$(git ls-remote --tags git+ssh://git@github.com/glotzerlab/$repo | sort -t '/' -k 3 -k 4 -V | grep -v { | awk -F/ '{ print $3 }' | tail -n1)
 fi
 
 _root="$dir"
