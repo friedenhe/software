@@ -29,11 +29,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   python3-setuptools \
   python3-sphinx \
   python3-sphinx-rtd-theme \
+  python3-tables \
   python3-yaml \
   zlib1g-dev \
   ca-certificates \
   && rm -rf /var/lib/apt/lists/* \
-  && pip3 install --no-cache-dir jupyter pillow pyhull
+  && pip3 install --no-cache-dir jupyter pillow pyhull deprecation
 
 # prevent python from loading packages from outside the container
 # default empty pythonpath
