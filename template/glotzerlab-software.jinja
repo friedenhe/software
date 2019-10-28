@@ -109,18 +109,15 @@
     && rm signac-flow-{{ SIGNAC_FLOW_VERSION }}.tar.gz \
     || exit 1
 
-{{ RUN }} curl -sSLO https://glotzerlab.engin.umich.edu/Downloads/hoomd/hoomd-{{ HOOMD_VERSION }}.tar.gz \
-    && echo "{{ HOOMD_SHA }}  hoomd-{{ HOOMD_VERSION }}.tar.gz" | sha256sum -c - \
-    && tar -xzf hoomd-{{ HOOMD_VERSION }}.tar.gz -C . \
-    && cd hoomd-{{ HOOMD_VERSION }} \
+{{ RUN }} git clone --recursive --branch next https://github.com/glotzerlab/hoomd-blue hoomd \
+    && cd hoomd \
     && mkdir -p build \
     && cd build \
     && export CFLAGS="{{CFLAGS}}" CXXFLAGS="{{CFLAGS}}" \
     && cmake ../ -DPYTHON_EXECUTABLE="`which python3`" -DENABLE_CUDA=on -DENABLE_MPI={{ ENABLE_MPI }} -DENABLE_TBB={{ ENABLE_TBB|default('on') }} -DBUILD_JIT={{ BUILD_JIT|default('on') }} -DBUILD_TESTING=off -DENABLE_MPI_CUDA={{ ENABLE_MPI_CUDA|default('off') }} -DCMAKE_INSTALL_PREFIX=`python3 -c "import site; print(site.getsitepackages()[0])"` \
     && make install -j{{ MAKEJOBS }} \
     && cd ../../ \
-    && rm -rf /root/hoomd-{{ HOOMD_VERSION }} \
-    && rm hoomd-{{ HOOMD_VERSION }}.tar.gz \
+    && rm -rf /root/hoomd \
     || exit 1
 
 {% if output != 'script' %}

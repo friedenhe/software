@@ -23,7 +23,7 @@ try:
     # HOOMD
     import hoomd
     context = hoomd.context.initialize('--mode=cpu')
-    assert(not context.on_gpu())
+    assert(not context.device.mode == 'gpu')
     results.write('HOOMD version     : {}\n'.format(hoomd.__version__))
     results.write('HOOMD flags       : {}\n'.format(hoomd._hoomd.hoomd_compile_flags()))
 
