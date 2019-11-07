@@ -155,14 +155,14 @@ if __name__ == '__main__':
           **versions,
           **shas)
 
-    write('script/summit/install.sh', [summit_template, glotzerlab_software_template],
-          ENABLE_MPI='on',
-          MAKEJOBS=20,
-          CFLAGS='-mcpu=power9 -mtune=power9',
-          output='script',
-          system='summit',
-          ENABLE_TBB='off',
-          BUILD_JIT='off',
-          ENABLE_MPI_CUDA='on',
-          **versions,
-          **shas)
+#     write('script/summit/install.sh', [summit_template, glotzerlab_software_template],
+#           ENABLE_MPI='on',
+#           MAKEJOBS=20,
+#           CFLAGS='-mcpu=power9 -mtune=power9',
+#           output='script',
+#           system='summit',
+#           ENABLE_TBB='off',
+#           BUILD_JIT='off',
+#           ENABLE_MPI_CUDA='on',
+#           **versions,
+#           **shas)
