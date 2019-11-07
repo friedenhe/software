@@ -5,6 +5,60 @@ Change log
 2019
 ----
 
+2019.11
++++++++
+
+*Software updates:*
+
+* fresnel v0.11.0
+* freud v2.0.0
+* garnett v0.6.1
+* HOOMD-blue v2.8.0
+
+*Library/OS updates:*
+
+* Ubuntu 18.04 [not on comet]
+* Python 3.6 [not on comet]
+
+*Supported systems:*
+
+* Removed UMich Great Flux
+
+
+2019.10
++++++++
+
+*Software updates:*
+
+* fresnel v0.10.1
+* gsd v1.9.3
+* HOOMD-blue v2.7.0
+* rowan v1.2.2
+* plato v1.7.0
+
+2019.09
++++++++
+
+*Software updates:*
+
+* fresnel v0.10.0
+* freud v1.2.2
+* garnett v0.5.0
+* gsd v1.8.1
+* signac-flow v0.8.0
+
+*Library/OS updates:*
+
+* embree v3.6.1
+* [summit] TBB 2019_U8
+* [summit] scipy v1.3.1
+* [greatlakes] Ubuntu 18.04
+* [greatlakes] Python 3.6
+
+*Supported systems:*
+
+* Added UMich Great Lakes
+
 2019.08
 +++++++
 
