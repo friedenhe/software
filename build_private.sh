@@ -8,6 +8,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 OUTPUT=`mktemp -d -t singularity.XXXXXXX`
 umask 022
 
+python make_dockerfiles.py
+
 cp $DIR/test/*.py $DIR/docker/nompi
 cp $DIR/*.tar.gz $DIR/docker/nompi
 docker build $DIR/docker/nompi \
